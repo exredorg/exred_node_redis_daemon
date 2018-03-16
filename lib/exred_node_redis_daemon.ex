@@ -18,6 +18,8 @@ defmodule Exred.Node.RedisDaemon do
     password: %{type: "string", value: nil},
     connection_name: %{type: "string", value: "redis"}
   }
+  @ui_attributes %{right_icon: "loop" }
+  
   
   use Exred.Library.NodePrototype
   require Logger
@@ -31,7 +33,9 @@ defmodule Exred.Node.RedisDaemon do
       password: state.config.password.value
     ]
     conn_opts = [name: String.to_atom( state.config.connection_name.value)]    # name cannot be a string 
+    
     redix_child_spec = Supervisor.child_spec {Redix, [redis_opts, conn_opts]}, []
+    
     case DaemonNodeSupervisor.start_child(redix_child_spec) do
       {:ok, _pid} -> :ok
       {:error, {:already_started, _pid}} -> :ok
