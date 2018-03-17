@@ -21,7 +21,7 @@ defmodule Exred.Node.RedisDaemon.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:exred_library, git: "git@bitbucket.org:zsolt001/exred_library.git", app: false},
+      {:exred_library, git: "git@bitbucket.org:zsolt001/exred_library.git"},
       {:redix, ">= 0.0.0"}
     ]
   end
