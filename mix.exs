@@ -1,12 +1,16 @@
 defmodule Exred.Node.RedisDaemon.Mixfile do
   use Mix.Project
 
+  @description "Provides connection pool to a Redis database"
+
   def project do
     [
       app: :exred_node_redis_daemon,
       version: "0.1.0",
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
+      description: @description,
+      package: package(),
       deps: deps()
     ]
   end
@@ -21,12 +25,12 @@ defmodule Exred.Node.RedisDaemon.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:exred_library, "~> 0.1.11"},
       {:ex_doc, "~> 0.18.0", only: :dev, runtime: false},
+      {:exred_library, "~> 0.1.11"},
       {:redix, ">= 0.0.0"}
     ]
   end
-  
+
   defp package do
     %{
       licenses: ["MIT"],
