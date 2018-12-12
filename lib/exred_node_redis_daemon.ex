@@ -1,12 +1,9 @@
 defmodule Exred.Node.RedisDaemon do
   @moduledoc """
-  This is a **deamon node**. It does not handle messages like a regular node.
+  This is a **daemon node**. It does not handle messages like a regular node.
   It is used for configuring and starting up a Redis connection pool that other
   nodes can use.
-  (currently it uses Redix)
   """
-
-  alias Exred.Scheduler.DaemonNodeSupervisor
 
   @name "Redis Daemon"
   @category "daemon"
@@ -20,37 +17,21 @@ defmodule Exred.Node.RedisDaemon do
   }
   @ui_attributes %{right_icon: "loop"}
 
-  use Exred.Library.NodePrototype
-  require Logger
+  use Exred.NodePrototype
 
   @impl true
-  def node_init(state) do
+  def daemon_child_specs(config) do
     redis_opts = [
-      host: state.config.host.value,
-      port: state.config.port.value,
-      database: state.config.database.value,
-      password: state.config.password.value
+      host: config.host.value,
+      port: config.port.value,
+      database: config.database.value,
+      password: config.password.value
     ]
 
     # name cannot be a string
-    conn_opts = [name: String.to_atom(state.config.connection_name.value)]
+    conn_opts = [name: String.to_atom(config.connection_name.value)]
 
-    redix_child_spec = Supervisor.child_spec({Redix, [redis_opts, conn_opts]}, [])
-
-    case DaemonNodeSupervisor.start_child(redix_child_spec) do
-      {:ok, _pid} ->
-        :ok
-
-      {:error, {:already_started, _pid}} ->
-        :ok
-
-      {:error, other} ->
-        event = "notification"
-        debug_data = %{msg: "Could not initialize " <> @name}
-        event_msg = %{node_id: state.node_id, node_name: @name, debug_data: debug_data}
-        state.send_event(event, event_msg)
-    end
-
-    state
+    # return the child spec for Redix
+    Supervisor.child_spec({Redix, [redis_opts, conn_opts]}, [])
   end
 end
