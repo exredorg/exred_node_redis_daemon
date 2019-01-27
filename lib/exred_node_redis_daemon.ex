@@ -32,6 +32,7 @@ defmodule Exred.Node.RedisDaemon do
     conn_opts = [name: String.to_atom(config.connection_name.value)]
 
     # return the child spec for Redix
-    Supervisor.child_spec({Redix, [redis_opts, conn_opts]}, [])
+    # [Supervisor.child_spec({Redix, [redis_opts, conn_opts]}, [])]
+    [Supervisor.child_spec({Redix, redis_opts ++ conn_opts}, [])]
   end
 end
